@@ -27,16 +27,16 @@ module.exports = {
       productId: {
         type: Sequelize.INTEGER,        
       },
-        userId: {
-          type: Sequelize.INTEGER,
-          references: {
-            model: 'Users', 
-            key: 'id'
-          },
-          allowNull: false,
-          onDelete: 'CASCADE',
-          onUpdate: 'CASCADE'
+      userId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Users', 
+          key: 'id'
         },
+        allowNull: false,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

@@ -8,17 +8,17 @@ module.exports = {
     for (let i = 0; i < 100; i++) {
       users.push({
         name: faker.name.fullName(),
-        age: faker.datatype.number({ min: 18, max: 80 }),
+        age: faker.number.int({ min: 10, max: 30}),
         address: faker.address.streetAddress(),
         role: faker.helpers.arrayElement(['user', 'admin']),
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
     }
-    await queryInterface.bulkInsert('users', users, {});
+    await queryInterface.bulkInsert('Users', users, {});
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('users', null, {});
+    await queryInterface.bulkDelete('Users', null, {});
   }
 };
