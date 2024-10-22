@@ -1,4 +1,4 @@
-const { Products } = require("../models");
+const { Products, Shops } = require("../models");
 
 const createProduct = async (req, res) => {
     const {name, stock, price} = req.body;
@@ -41,9 +41,13 @@ const createProduct = async (req, res) => {
 
 const getAllProduct = async (req, res) => {
     try {
-        console.log("hello")
-        const products = await Products.findAll()
-        console.log(products)
+        const products = await Products.findAll({
+            include: [
+                {
+                    model: Shops,
+                }
+            ]
+        })
 
         res.status(200).json({
             status: "Success",
