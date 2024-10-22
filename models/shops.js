@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Shops extends Model {
     /**
@@ -11,42 +9,38 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Shops.belongsTo(models.Users, { foreignKey: 'userId', as: 'user' });
-      Shops.belongsTo(models.Products, { foreignKey: 'productId', as: 'Products' });
+      Shops.belongsTo(models.Users, { foreignKey: "userId", as: "user" });
+      Shops.hasMany(models.Products, {
+        foreignKey: "shopId",
+        as: "products",
+      });
     }
   }
-  Shops.init({
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-      validate: {
-        len: [4, 100]
-      }
-    },
-    productId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'Products', 
-        key: 'id',
+  Shops.init(
+    {
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+          len: [4, 100],
+        },
       },
-      allowNull: false,
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-    },
-    userId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'Users',
-        key: 'id',
+      userId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "Users",
+          key: "id",
+        },
+        allowNull: false,
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
-      allowNull: false,
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
     },
-  }, {
-    sequelize,
-    modelName: 'Shops'
-  });
+    {
+      sequelize,
+      modelName: "Shops",
+    }
+  );
   return Shops;
 };
