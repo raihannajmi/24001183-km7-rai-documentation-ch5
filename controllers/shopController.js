@@ -1,4 +1,5 @@
 const { Shops, Products, Users } = require("../models");
+const { Op } = require("sequelize");
 
 const createShop = async (req, res) => {
   const { name, adminEmail, userId } = req.body;
@@ -48,12 +49,32 @@ const createShop = async (req, res) => {
 
 const getAllShop = async (req, res) => {
   try {
-    const shops = await Shops.findAll({
+    const {
+      shopName,
+      adminEmail,
+      productName,
+      stock,
+      page = 1,
+      perPage = 10,
+    } = req.query;
+
+    const condition = {};
+    if (shopName) condition.name = { [Op.iLike]: `%${shopName}%` };
+
+    const productCondition = {};
+    if (productName) productCondition.name = { [Op.iLike]: `%${productName}%` };
+    if (stock) productCondition.stock = stock;
+
+    const limit = parseInt(perPage, 10);
+    const offset = (parseInt(page, 10) - 1) * limit;
+
+    const { count, rows: shops } = await Shops.findAndCountAll({
       include: [
         {
           model: Products,
           as: "products",
           attributes: ["name", "images"],
+          where: productCondition,
         },
         {
           model: Users,
@@ -62,14 +83,23 @@ const getAllShop = async (req, res) => {
         },
       ],
       attributes: ["name", "adminEmail"],
+      where: condition,
+      limit,
+      offset,
     });
 
+    const totalData = count;
+    const totalPages = Math.ceil(totalData / limit);
+
     res.status(200).json({
-      status: "Success",
-      message: "Success get shops data",
-      isSuccess: true,
-      data: {
-        shops,
+      data: shops,
+      meta: {
+        totalData,
+        page: parseInt(page, 10),
+        perPage: limit,
+        totalPages,
+        statusCode: 200,
+        message: "Data was successfully retrieved!",
       },
     });
   } catch (error) {
