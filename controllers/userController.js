@@ -62,7 +62,7 @@ const getAllUser = async (req, res) => {
 
     const condition = {};
     if (name) condition.name = { [Op.iLike]: `%${name}%` };
-    if (age) condition.age = { [Op.iLike]: `%${age}%` };
+    if (age) condition.age = age;
     if (address) condition.address = { [Op.iLike]: `%${address}%` };
     if (role) condition.role = { [Op.iLike]: `%${role}%` };
 

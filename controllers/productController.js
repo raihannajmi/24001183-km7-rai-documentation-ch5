@@ -49,21 +49,40 @@ const createProduct = async (req, res) => {
 
 const getAllProduct = async (req, res) => {
   try {
-    const products = await Products.findAll({
+    const { name, stock, price, page = 1, perPage = 10 } = req.query;
+
+    const condition = {};
+    if (name) condition.name = { [Op.iLike]: `%${name}%` };
+    if (stock) condition.stock = stock;
+    if (price) condition.price = price;
+
+    const limit = parseInt(perPage, 10);
+    const offset = (parseInt(page, 10) - 1) * limit;
+
+    const { count, rows: products } = await Products.findAndCountAll({
       include: [
         {
           model: Shops,
           as: "shop",
         },
       ],
+      where: condition,
+      limit,
+      offset,
     });
 
+    const totalData = count;
+    const totalPages = Math.ceil(totalData / limit);
+
     res.status(200).json({
-      status: "Success",
-      message: "Success get products data",
-      isSuccess: true,
-      data: {
-        products,
+      data: products,
+      meta: {
+        totalData,
+        page: parseInt(page, 10),
+        perPage: limit,
+        totalPages,
+        statusCode: 200,
+        message: "Data was successfully retrieved!",
       },
     });
   } catch (error) {
