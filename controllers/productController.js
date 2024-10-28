@@ -1,4 +1,5 @@
 const { Products, Shops } = require("../models");
+const { Op } = require("sequelize");
 
 const createProduct = async (req, res) => {
   const { name, stock, price, shopId } = req.body;
